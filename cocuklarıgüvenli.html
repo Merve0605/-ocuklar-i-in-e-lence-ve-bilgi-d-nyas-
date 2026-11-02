@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çocuklar İçin Eğlence ve Bilgi Dünyası</title>
+    <!-- Favicon (Tarayıcı Amblebi) için SVG tabanlı ikon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2360a5fa' d='M12 2A10 10 0 1 0 22 12 10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8z'/%3E%3Cpath fill='%233b82f6' d='M10 12a2 2 0 1 0 2-2 2 2 0 0 0-2 2zm2 4a2 2 0 1 0 2-2 2 2 0 0 0-2 2z'/%3E%3Cpath fill='%2360a5fa' d='M15 11h-2v2h2zm-4 0H9v2h2z'/%3E%3C/svg%3E">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url("https://www.transparenttextures.com/patterns/clean-gray-paper.png");
+            background-color: #e2f4ff;
+        }
+
+        .card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .play-button {
+            transition: transform 0.2s ease;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animasyonlu top için CSS */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        .animated-ball {
+            animation: bounce 1.5s infinite ease-in-out;
+            border-radius: 50%;
+        }
+
+        /* Balon animasyonu için CSS */
+        @keyframes balloon-pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .balloon {
+            transition: transform 0.5s ease;
+        }
+        .pop {
+            animation: balloon-pop 0.5s ease-out forwards;
+        }
+
+        /* Seslendirme Kontrol Paneli */
+        .audio-player-container {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            display: none; /* Varsayılan olarak gizli */
+            animation: fadeIn 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) translateX(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Ana Konteyner -->
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Başlık Bölümü -->
+        <header class="text-center my-8 md:my-12">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-600 mb-2 drop-shadow-lg">
+                <span class="inline-block animate-bounce-slow">✨</span> Eğlenceli Öğrenme Dünyası
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-600 font-medium">
+                Sayıları, hayvanları, dilleri, kültürleri ve daha fazlasını keşfet!
+            </p>
+        </header>
+
+        <!-- İçerik Alanı -->
+        <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Sayılar Kartı -->
+            <div class="card" data-section="sayilar">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🔢</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Sayılar</h2>
+                </div>
+                <p class="text-gray-600 mb-4">1'den 10'a kadar sayıları öğrenelim. Her bir sayıya dokunarak adını duyabilirsin!</p>
+                <div class="flex flex-wrap gap-2 text-center">
+                    <button class="bg-pink-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Bir">1</button>
+                    <button class="bg-purple-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="İki">2</button>
+                    <button class="bg-blue-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Üç">3</button>
+                    <button class="bg-green-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Dört">4</button>
+                    <button class="bg-yellow-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Beş">5</button>
+                    <button class="bg-orange-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Altı">6</button>
+                    <button class="bg-red-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Yedi">7</button>
+                    <button class="bg-indigo-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Sekiz">8</button>
+                    <button class="bg-teal-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Dokuz">9</button>
+                    <button class="bg-cyan-400 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="On">10</button>
+                </div>
+            </div>
+
+            <!-- Hayvanlar Kartı -->
+            <div class="card" data-section="hayvanlar">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🦁</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Hayvanlar</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Farklı hayvanları tanıyalım. Onların adlarını ve seslerini duyabilirsin.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🐶</span>
+                        <button class="bg-yellow-200 text-yellow-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Köpek, hav hav!">Köpek</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🐱</span>
+                        <button class="bg-purple-200 text-purple-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Kedi, miyav miyav!">Kedi</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🐘</span>
+                        <button class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Fil!">Fil</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🐼</span>
+                        <button class="bg-pink-200 text-pink-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Panda!">Panda</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yabancı Diller Kartı -->
+            <div class="card" data-section="diller">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🌍</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Yabancı Diller</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Farklı dillerde "Merhaba" demeyi öğrenelim!</p>
+                <div class="flex flex-wrap gap-2 text-center">
+                    <button class="bg-blue-300 text-white font-bold py-2 px-4 rounded-full text-sm play-button" data-text="İngilizce: Hello!">İngilizce</button>
+                    <button class="bg-red-300 text-white font-bold py-2 px-4 rounded-full text-sm play-button" data-text="Fransızca: Bonjour!">Fransızca</button>
+                    <button class="bg-yellow-300 text-gray-800 font-bold py-2 px-4 rounded-full text-sm play-button" data-text="İspanyolca: ¡Hola!">İspanyolca</button>
+                    <button class="bg-green-300 text-white font-bold py-2 px-4 rounded-full text-sm play-button" data-text="Almanca: Hallo!">Almanca</button>
+                    <button class="bg-purple-300 text-white font-bold py-2 px-4 rounded-full text-sm play-button" data-text="Arapça: Marhaba!">Arapça</button>
+                    <button class="bg-teal-300 text-white font-bold py-2 px-4 rounded-full text-sm play-button" data-text="Çince: Nǐ hǎo!">Çince</button>
+                </div>
+            </div>
+
+            <!-- Dünya Kültürleri Kartı -->
+            <div class="card" data-section="kulturler">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🌎</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Dünya Kültürleri</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Dünyadaki farklı kültürler hakkında kısa ve ilginç bilgiler öğrenelim.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🇹🇷</span>
+                        <button class="bg-red-200 text-red-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Türkiye, hem Asya hem de Avrupa kıtalarında yer alan harika bir ülkedir ve misafirperver insanlarıyla ünlüdür.">Türkiye</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🇯🇵</span>
+                        <button class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Japonya'da selamlaşırken hafifçe eğiliriz.">Japonya</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🇮🇳</span>
+                        <button class="bg-orange-200 text-orange-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Hindistan'da insanlar Namaste diyerek ellerini birleştirirler.">Hindistan</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🇪🇬</span>
+                        <button class="bg-green-200 text-green-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Mısır'da piramitler çok büyük ve eski yapılardır.">Mısır</button>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-5xl block mb-2">🇦🇺</span>
+                        <button class="bg-blue-200 text-blue-800 font-semibold py-2 px-4 rounded-full text-sm w-full play-button" data-text="Avustralya'da kangurular zıplayarak hareket ederler.">Avustralya</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Takımlar Kartı -->
+            <div class="card" data-section="takimlar">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🏆</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Takımlar</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Takım sporları hakkında bilgi edinelim.</p>
+                <div class="flex flex-wrap gap-2 text-center">
+                    <button class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Futbol takımı, on bir kişiyle sahada topu rakip kaleye sokmaya çalışır.">⚽ Futbol Takımı</button>
+                    <button class="bg-orange-600 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Basketbol takımı, beşi bir arada topu potaya atmak için mücadele eder.">🏀 Basketbol Takımı</button>
+                    <button class="bg-gray-600 text-white font-bold py-2 px-4 rounded-full text-lg play-button" data-text="Voleybol takımı, altı kişiyle topu file üzerinden geçirerek sayı kazanmaya çalışır.">🏐 Voleybol Takımı</button>
+                </div>
+            </div>
+
+            <!-- Motorlu Taşıtlar Kartı -->
+            <div class="card" data-section="tasitlar">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🚀</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Motorlu Taşıtlar</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Motorlu taşıtların dünyasını keşfedelim!</p>
+                <div class="flex flex-wrap gap-2 text-center">
+                    <button class="bg-red-500 text-white font-bold py-3 px-6 rounded-full text-lg play-button" data-text="Arabalar, dört tekerlekli ve motorlu araçlardır. Bizi bir yerden başka bir yere hızlıca götürürler.">🚗 Arabalar</button>
+                    <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-full text-lg play-button" data-text="Motosikletler, iki tekerlekli ve motorlu taşıtlardır. Çok hızlı ve çevik olabilirler.">🏍️ Motosikletler</button>
+                    <button class="bg-green-500 text-white font-bold py-3 px-6 rounded-full text-lg play-button" data-text="Otobüsler, çok fazla insanı aynı anda taşıyabilen büyük araçlardır.">🚌 Otobüsler</button>
+                </div>
+            </div>
+
+            <!-- Zeka Oyunları Kartı -->
+            <div class="card" data-section="zeka">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🧠</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Zeka Oyunları</h2>
+                </div>
+                <p id="zeka-oyunlari-container" class="space-y-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-500 mb-2">Sayıları Sırala</h3>
+                        <p id="zeka-talimat" class="text-gray-600 mb-4 font-medium">Başlamak için en küçük sayıya tıkla.</p>
+                        <div class="flex justify-center items-center gap-4">
+                            <button class="bg-yellow-300 text-yellow-800 font-bold py-3 px-6 rounded-full text-lg zeka-button" data-order="1">1</button>
+                            <button class="bg-orange-300 text-orange-800 font-bold py-3 px-6 rounded-full text-lg zeka-button" data-order="2">2</button>
+                            <button class="bg-red-300 text-red-800 font-bold py-3 px-6 rounded-full text-lg zeka-button" data-order="3">3</button>
+                        </div>
+                    </div>
+                </p>
+            </div>
+
+            <!-- Bilmece ve Bulmaca Kartı -->
+            <div class="card" data-section="bilmece">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🤔</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Bilmece ve Bulmaca</h2>
+                </div>
+                <p id="bilmece-text" class="text-gray-600 mb-4 font-bold"></p>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button id="reveal-button" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-full text-lg">Cevabı Gör</button>
+                    <button id="next-riddle-button" class="bg-green-500 text-white font-bold py-3 px-6 rounded-full text-lg hidden">Sonraki Bilmece</button>
+                </div>
+                <p id="cevap-text" class="text-green-600 text-center mt-4 font-bold hidden"></p>
+            </div>
+            
+            <!-- Yeni Kart: Renk Eşleştirme Oyunu -->
+            <div class="card" data-section="renk-eslestirme">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl sm:text-5xl md:text-6xl mr-4">🎨</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700">Renk Eşleştirme</h2>
+                </div>
+                <p id="renk-talimat" class="text-gray-600 mb-4 font-medium">Hangi rengi görüyorsun? Doğru renge tıkla.</p>
+                <div id="target-color-container" class="flex justify-center items-center h-24 mb-4">
+                    <div id="target-color-display" class="w-32 h-24 rounded-lg shadow-inner border-4 border-gray-300"></div>
+                </div>
+                <div id="color-buttons-container" class="flex flex-wrap justify-center gap-2">
+                    <!-- Renk butonları JavaScript ile oluşturulacak -->
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- Seslendirme Kontrol Paneli -->
+    <div id="audio-player" class="audio-player-container">
+        <div class="flex items-center justify-between">
+            <div id="player-text" class="text-base sm:text-lg font-bold text-gray-700 mr-4 truncate"></div>
+            <div class="flex items-center space-x-2">
+                <button id="play-pause-button" class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105">
+                    <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 9a1 1 0 01-1 1v2a1 1 0 102 0v-2a1 1 0 00-1-1zM11 9a1 1 0 00-1 1v2a1 1 0 102 0v-2a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                <button id="stop-button" class="w-12 h-12 rounded-full bg-red-400 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 9a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Seslendirme API'si
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.lang = 'tr-TR';
+        
+        const audioPlayer = document.getElementById('audio-player');
+        const playerText = document.getElementById('player-text');
+        const playPauseButton = document.getElementById('play-pause-button');
+        const stopButton = document.getElementById('stop-button');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const revealButton = document.getElementById('reveal-button');
+        const nextRiddleButton = document.getElementById('next-riddle-button');
+        const cevapText = document.getElementById('cevap-text');
+        const bilmeceText = document.getElementById('bilmece-text');
+
+        let isSpeaking = false;
+        let currentText = '';
+
+        const riddles = [
+            { question: "Bir odanın dört köşesi var. Her köşede bir kedi oturuyor. Her kedinin karşısında üç kedi var. Odada kaç kedi var?", answer: "Dört kedi." },
+            { question: "Ne zaman girersen gir, içi hep dolu.", answer: "Buzdolabı." },
+            { question: "Yemek yer, su içer, ama hiç doymayıp ölür.", answer: "Ateş." },
+            { question: "Hangi kuş uçar ama yuva yapmaz?", answer: "Saat." },
+            { question: "Dağda gezer, evde oturur. Yaramazdır ama sevilir.", answer: "Kedi." },
+            { question: "Beyaz üstüne damla damla, ne güzel olur bu manzara.", answer: "Kar" }
+        ];
+
+        let currentRiddleIndex = 0;
+
+        function displayRiddle() {
+            const riddle = riddles[currentRiddleIndex];
+            bilmeceText.textContent = riddle.question;
+            cevapText.textContent = "";
+            cevapText.classList.add('hidden');
+            revealButton.classList.remove('hidden');
+            nextRiddleButton.classList.add('hidden');
+        }
+
+        // Tıklanan butona göre seslendirmeyi başlatır veya durdurur
+        function startSpeaking(text) {
+            window.speechSynthesis.cancel();
+            utterance.text = text;
+            currentText = text;
+            playerText.textContent = text;
+            audioPlayer.style.display = 'flex';
+            window.speechSynthesis.speak(utterance);
+            isSpeaking = true;
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        }
+
+        // Play/Pause butonu için olay dinleyici
+        playPauseButton.addEventListener('click', () => {
+            if (isSpeaking) {
+                window.speechSynthesis.pause();
+                isSpeaking = false;
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            } else {
+                window.speechSynthesis.resume();
+                isSpeaking = true;
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            }
+        });
+
+        // Durdur butonu için olay dinleyici
+        stopButton.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            audioPlayer.style.display = 'none';
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        });
+
+        // Tüm oynat butonlarına olay dinleyicisi ekle
+        document.querySelectorAll('.play-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const textToSpeak = button.getAttribute('data-text');
+                if (textToSpeak) {
+                    startSpeaking(textToSpeak);
+                }
+            });
+        });
+
+        // Bilmece cevabını gösterme ve seslendirme işlevi
+        revealButton.addEventListener('click', () => {
+            const riddle = riddles[currentRiddleIndex];
+            cevapText.textContent = `Cevap: ${riddle.answer}`;
+            cevapText.classList.remove('hidden');
+            revealButton.classList.add('hidden');
+            nextRiddleButton.classList.remove('hidden');
+            startSpeaking(`Cevap: ${riddle.answer}`);
+        });
+
+        // Sonraki bilmeceye geçiş
+        nextRiddleButton.addEventListener('click', () => {
+            currentRiddleIndex = (currentRiddleIndex + 1) % riddles.length;
+            displayRiddle();
+        });
+
+        // Konuşma bittiğinde butonu güncelle
+        utterance.onend = () => {
+            isSpeaking = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        };
+
+        // Zeka Oyunları - Sayıları Sırala
+        const zekaButtons = document.querySelectorAll('.zeka-button');
+        const zekaTalimat = document.getElementById('zeka-talimat');
+        let expectedNumber = 1;
+        
+        zekaButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const order = parseInt(button.getAttribute('data-order'));
+                if (order === expectedNumber) {
+                    startSpeaking(order + ' doğru!');
+                    button.classList.add('bg-green-500', 'text-white');
+                    button.classList.remove('bg-yellow-300', 'bg-orange-300', 'bg-red-300', 'text-yellow-800', 'text-orange-800', 'text-red-800');
+                    button.disabled = true;
+                    expectedNumber++;
+                    if (expectedNumber > 3) {
+                        startSpeaking('Tebrikler! Oyunu tamamladın!');
+                        zekaTalimat.textContent = 'Harika! Tekrar oynamak için sayfayı yenile.';
+                        setTimeout(() => {
+                            zekaButtons.forEach(btn => btn.disabled = false);
+                        }, 5000);
+                    } else {
+                        zekaTalimat.textContent = 'Şimdi ' + expectedNumber + ' sayısına tıkla.';
+                    }
+                } else {
+                    startSpeaking('Yanlış! Tekrar dene.');
+                    // Yanlış butonu geçici olarak kırmızıya çevir
+                    button.classList.add('bg-red-500', 'text-white');
+                    setTimeout(() => {
+                        button.classList.remove('bg-red-500', 'text-white');
+                    }, 500);
+                }
+            });
+        });
+
+        // Renk Eşleştirme Oyunu
+        const renkler = [
+            { name: "Kırmızı", hex: "#ef4444", tailwind: "bg-red-500" },
+            { name: "Mavi", hex: "#3b82f6", tailwind: "bg-blue-500" },
+            { name: "Yeşil", hex: "#22c55e", tailwind: "bg-green-500" },
+            { name: "Sarı", hex: "#eab308", tailwind: "bg-yellow-500" },
+            { name: "Turuncu", hex: "#f97316", tailwind: "bg-orange-500" },
+            { name: "Mor", hex: "#a855f7", tailwind: "bg-purple-500" }
+        ];
+
+        let targetColor;
+        const renkTalimat = document.getElementById('renk-talimat');
+        const targetColorDisplay = document.getElementById('target-color-display');
+        const colorButtonsContainer = document.getElementById('color-buttons-container');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startRenkOyunu() {
+            shuffle(renkler);
+            targetColor = renkler[0];
+            renkTalimat.textContent = "Şimdi " + targetColor.name + " rengini bul.";
+            targetColorDisplay.style.backgroundColor = targetColor.hex;
+            startSpeaking("Şimdi " + targetColor.name + " rengini bul.");
+
+            colorButtonsContainer.innerHTML = '';
+            const buttonColors = renkler.slice(0, 4);
+            shuffle(buttonColors);
+
+            buttonColors.forEach(color => {
+                const button = document.createElement('button');
+                button.className = `play-button text-white font-bold py-3 px-6 rounded-full text-lg ${color.tailwind}`;
+                button.textContent = color.name;
+                button.setAttribute('data-color', color.name);
+                button.addEventListener('click', () => {
+                    if (button.getAttribute('data-color') === targetColor.name) {
+                        startSpeaking("Doğru! Harikasın.");
+                        setTimeout(startRenkOyunu, 2000); // 2 saniye sonra yeni oyun başlar
+                    } else {
+                        startSpeaking("Yanlış renk, tekrar dene.");
+                        button.classList.add('animate-pulse');
+                        setTimeout(() => button.classList.remove('animate-pulse'), 500);
+                    }
+                });
+                colorButtonsContainer.appendChild(button);
+            });
+        }
+
+        // Sayfa yüklendiğinde ilk bilmeceyi ve renk oyununu göster
+        window.onload = () => {
+            displayRiddle();
+            startRenkOyunu();
+        };
+
+    </script>
+</body>
+</html>
